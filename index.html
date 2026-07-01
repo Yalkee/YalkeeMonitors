@@ -1,14 +1,772 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>YalkeeMonitors</title>
+    <link rel="icon" href="https://github.com/somenmi/images/raw/main/Yalkee_Corporation/YalkeeMonitors/logo.png"
+        type="image/png">
+    <style>
+        :root {
+            --sq-size: 70px;
+            --sq-width: 100px;
+            --sq-gap: 18px;
+            --sq-column-gap: 18px;
+            --radius: 12px;
+
+            --desc-height: 100px;
+            --desc-gap: 18px;
+
+            --width-one: calc(var(--sq-width) * 3.35);
+            --width-two: calc(var(--sq-width) * 3.35);
+            --width-three: calc(var(--sq-width) * 3.35);
+
+            --content-offset: 100px;
+
+            --bg-accent: #1c32b6;
+            --card-bg: transparent;
+            --card-hover-bg: rgba(28, 34, 60, 0.9);
+            --text-primary: #f0f0f8;
+            --text-secondary: #c8ccdd;
+            --border-hover: rgba(142, 159, 255, 0.7);
+            --border-before: rgba(142, 159, 255, 0.15);
+            --border-before-before: rgba(142, 159, 255, 0.1);
+            --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.15);
+            --shadow-hover: 0 8px 22px rgba(0, 0, 0, 0.4);
+            --logo-size: 400px;
+            --font-main: 'Verdana', 'Tahoma', 'Geneva', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            background: #000000;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, #1c32b6 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 50%, #1c32b6 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, #000000 0%, #000000 100%);
+            background-blend-mode: screen;
+            animation: gradientDrift 16s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 40%, transparent 30%, #000000 100%);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseVignette 8s ease-in-out infinite;
+        }
+
+        @keyframes gradientDrift {
+
+            0%,
+            100% {
+                transform: translate(0%, 0%) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(3%, -2%) rotate(1deg);
+            }
+
+            50% {
+                transform: translate(-2%, 3%) rotate(-1deg);
+            }
+
+            75% {
+                transform: translate(-3%, -1%) rotate(0.5deg);
+            }
+        }
+
+        @keyframes pulseVignette {
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .lang-toggle {
+            position: fixed;
+            top: 28px;
+            right: 32px;
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(-18px);
+            transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+        }
+
+        .lang-toggle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .lang-btn {
+            font-family: var(--font-main);
+            background: none;
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px 2px;
+            line-height: 1;
+            transition: transform 0.2s ease, color 0.2s ease;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5c72d1;
+            letter-spacing: 0.5px;
+            background-color: transparent;
+        }
+
+        .lang-btn:hover {
+            color: #879ce7;
+        }
+
+        .lang-btn.active {
+            font-weight: 600;
+            transform: scale(1.35);
+            color: #ffffff;
+        }
+
+        .lang-btn.active:hover {
+            transform: scale(1.35);
+            color: #ffffff;
+        }
+
+        .main-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 880px;
+            padding: 20px;
+            transform: translateY(var(--content-offset));
+            transition: transform 0.85s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        .main-wrapper.shifted {
+            transform: translateY(0);
+        }
+
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container {
+            position: relative;
+            width: var(--logo-size);
+            height: var(--logo-size);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-glow {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(28, 50, 182, 0.55) 0%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            filter: blur(35px);
+        }
+
+        .logo-glow.active {
+            opacity: 0.8;
+            animation: glowPulse 3.2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: scale(0) rotate(-540deg);
+            filter: drop-shadow(0 0 0px transparent);
+            transition: filter 0.7s ease 0.3s;
+            will-change: transform, opacity, filter;
+        }
+
+        .logo-img.spinning {
+            animation: logoSpinIn 1.35s cubic-bezier(0.18, 0.55, 0.15, 1.02) forwards;
+        }
+
+        .logo-img.visible {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 16px rgba(28, 50, 182, 1));
+        }
+
+        @keyframes logoSpinIn {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-620deg);
+            }
+
+            30% {
+                opacity: 0.5;
+            }
+
+            55% {
+                opacity: 0.9;
+                transform: scale(0.92) rotate(-50deg);
+            }
+
+            75% {
+                transform: scale(1.05) rotate(8deg);
+            }
+
+            92% {
+                transform: scale(0.97) rotate(-2deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .program-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #9fffaf 0%, #8e9fff 28%, #8e9fff 72%, #ff9999 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGradientShift 8s ease-in-out infinite;
+            text-align: center;
+            line-height: 1.2;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+            margin-top: 5px;
+        }
+
+        .program-title.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes titleGradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .versions-wrapper {
+            display: flex;
+            gap: var(--sq-gap);
+            column-gap: var(--sq-column-gap);
+            width: 100%;
+            max-width: 740px;
+            margin-top: 22px;
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) 0s,
+                transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) 0s;
+            pointer-events: none;
+            justify-content: center;
+            align-items: flex-start;
+            padding-bottom: calc(var(--desc-height) + var(--desc-gap) + 20px);
+        }
+
+        .versions-wrapper.revealed {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .version-item {
+            width: var(--sq-width);
+            height: var(--sq-size);
+            flex: 0 0 var(--sq-size);
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .version-item:hover {
+            z-index: 20;
+        }
+
+        .square {
+            width: var(--sq-width);
+            height: 100%;
+            background: transparent;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 2px solid var(--border-before-before);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background 0.3s ease 0.7s, border-color 0.2s ease, box-shadow 0.35s ease;
+            box-shadow: var(--shadow-card);
+        }
+
+        .versions-wrapper.revealed .square {
+            background: var(--card-bg);
+        }
+
+        .version-item:hover .square {
+            background: rgba(255, 245, 170, 0.25);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .version-label {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #ffffff;
+            z-index: 2;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .version-item:hover .version-label {
+            color: #b3ccff;
+        }
+
+        .version-item.x-item .version-label {
+            font-size: 1.15rem;
+            transition: color 0.3s ease 0.7s;
+            color: #b3ffb7;
+        }
+
+        .version-item.x-item:hover .version-label {
+            transition: color 0.3s ease 0.7s;
+            color: #ffada8;
+        }
+
+        .desc-panel {
+            position: absolute;
+            top: calc(100% + var(--desc-gap));
+            background: var(--card-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 2px solid var(--border-before);
+            border-radius: var(--radius);
+            overflow: hidden;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            height: 0;
+            width: var(--sq-width);
+            opacity: 0;
+            transition:
+                height 0.35s ease 0.35s,
+                width 0.35s ease 0s,
+                border-color 0.2s ease,
+                background-color 0.3s ease 0s,
+                box-shadow 0.35s ease,
+                opacity 0.2s ease 0s;
+        }
+
+        .version-item:hover .desc-panel {
+            background-color: var(--card-hover-bg);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-hover);
+            opacity: 1;
+            transition:
+                height 0.35s ease 0s,
+                width 0.35s ease 0.35s,
+                border-color 0.2s ease,
+                background-color 0.3s ease 0.7s,
+                box-shadow 0.35s ease,
+                opacity 0.2s ease 0s;
+        }
+
+        .version-item:hover .desc-panel {
+            background-color: rgba(255, 245, 170, 0.25);
+        }
+
+        .desc-text {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            padding: 6px 10px;
+            text-align: center;
+            white-space: normal;
+            word-break: break-word;
+            width: 100%;
+        }
+
+        .version-item[data-shape="v1.0"] .desc-panel {
+            left: 0;
+        }
+
+        .version-item[data-shape="v1.0"]:hover .desc-panel {
+            height: var(--desc-height);
+            width: var(--width-one);
+        }
+
+        .version-item[data-shape="v1.1"] .desc-panel {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .version-item[data-shape="v1.1"]:hover .desc-panel {
+            height: var(--desc-height);
+            width: var(--width-two);
+        }
+
+        .version-item[data-shape="X"] .desc-panel {
+            right: 0;
+            left: auto;
+        }
+
+        .version-item[data-shape="X"]:hover .desc-panel {
+            height: var(--desc-height);
+            width: var(--width-three);
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --logo-size: 220px;
+                --sq-size: 60px;
+                --sq-gap: 12px;
+                --desc-height: 60px;
+                --desc-gap: 12px;
+                --content-offset: 60px;
+            }
+
+            .program-title {
+                font-size: 2rem;
+            }
+
+            .version-label {
+                font-size: 1rem;
+            }
+
+            .desc-text {
+                font-size: 0.7rem;
+            }
+
+            .main-wrapper {
+                transform: translateY(var(--content-offset));
+            }
+
+            .main-wrapper.shifted {
+                transform: translateY(0);
+            }
+
+            .lang-toggle {
+                top: 16px;
+                right: 14px;
+                gap: 12px;
+            }
+
+            .lang-btn {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --logo-size: 170px;
+                --sq-size: 52px;
+                --sq-gap: 8px;
+                --desc-height: 50px;
+                --desc-gap: 8px;
+                --content-offset: 40px;
+            }
+
+            .program-title {
+                font-size: 1.6rem;
+            }
+
+            .version-label {
+                font-size: 0.9rem;
+            }
+
+            .desc-text {
+                font-size: 0.65rem;
+                padding: 4px 6px;
+            }
+
+            .main-wrapper {
+                transform: translateY(var(--content-offset));
+            }
+
+            .main-wrapper.shifted {
+                transform: translateY(0);
+            }
+
+            .lang-btn {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    Yalkee Monitors
+
+    <div class="lang-toggle" id="langToggle" aria-label="Выбор языка">
+        <button class="lang-btn active" data-lang="ru" title="Русский">RU</button>
+        <button class="lang-btn" data-lang="gb" title="English">GB</button>
+    </div>
+
+    <div class="main-wrapper" id="mainWrapper">
+        <div class="logo-section">
+            <div class="logo-container" id="logoContainer">
+                <div class="logo-glow" id="logoGlow"></div>
+                <img class="logo-img" id="logoImg"
+                    src="https://github.com/somenmi/images/raw/main/Yalkee_Corporation/YalkeeMonitors/logo.png"
+                    alt="YalkeeMonitors Logo" draggable="false" />
+            </div>
+            <h1 class="program-title" id="programTitle">Yalkee Monitors</h1>
+        </div>
+
+        <div class="versions-wrapper" id="versionsWrapper">
+
+            <a class="version-item" data-shape="v1.0"
+                href="https://github.com/Yalkee/YalkeeMonitors/releases/download/v1.0.0/YalkeeMonitors_v1.0.exe"
+                target="_blank" rel="noopener noreferrer" tabindex="0">
+                <div class="square">
+                    <span class="version-label">v1.0</span>
+                </div>
+                <div class="desc-panel">
+                    <span class="desc-text" data-key="desc_v1_0">
+                        Идеальная версия для аппаратного DDC/CI контроля яркости и контраста монитора(-ов)
+                    </span>
+                </div>
+            </a>
+
+            <a class="version-item" data-shape="v1.1"
+                href="https://github.com/Yalkee/YalkeeMonitors/releases/download/v1.1.0/YalkeeMonitors_v1.1.exe"
+                target="_blank" rel="noopener noreferrer" tabindex="0">
+                <div class="square">
+                    <span class="version-label">v1.1</span>
+                </div>
+                <div class="desc-panel">
+                    <span class="desc-text" data-key="desc_v1_1">
+                        Аппаратный DDC/CI контроль яркости и контраста монитора(-ов), а&nbsp;также контроль RGB-гаммы
+                        цветов видеокарты (можно сохранить, автозапуск фильтра при старте системы)
+                    </span>
+                </div>
+            </a>
+
+            <a class="version-item x-item" data-shape="X" id="xCard"
+                href="https://github.com/yalkee/YalkeeMonitors/releases" target="_blank" rel="noopener noreferrer"
+                title="Все релизы на GitHub" tabindex="0">
+                <div class="square">
+                    <span class="version-label">Other</span>
+                </div>
+                <div class="desc-panel">
+                    <span class="desc-text" data-key="desc_x">
+                        Нажмите, чтобы посмотреть все релизы на&nbsp;GitHub
+                    </span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const langToggle = document.getElementById('langToggle');
+            const langBtns = langToggle.querySelectorAll('.lang-btn');
+            const mainWrapper = document.getElementById('mainWrapper');
+            const logoImg = document.getElementById('logoImg');
+            const logoGlow = document.getElementById('logoGlow');
+            const versionsWrapper = document.getElementById('versionsWrapper');
+            const programTitle = document.getElementById('programTitle');
+            const xCard = document.getElementById('xCard');
+
+            const translations = {
+                ru: {
+                    desc_v1_0: 'Идеальная версия для аппаратного DDC/CI контроля яркости и контраста монитора(-ов)',
+                    desc_v1_1: 'Аппаратный DDC/CI контроль яркости и контраста монитора(-ов), а&nbsp;также контроль RGB-гаммы цветов видеокарты (можно сохранить, автозапуск фильтра при старте системы)',
+                    desc_x: 'Нажмите, чтобы посмотреть все релизы',
+                    x_title: 'Все релизы на GitHub',
+                    lang_ru_title: 'Русский',
+                    lang_gb_title: 'English',
+                },
+                gb: {
+                    desc_v1_0: 'The ideal version for hardware DDC/CI brightness and contrast control of monitor(s)',
+                    desc_v1_1: 'Hardware DDC/CI brightness & contrast control of monitor(s), plus video card RGB-gamma color control (saveable, auto-start filter on system boot)',
+                    desc_x: 'Click to view all releases',
+                    x_title: 'All releases on GitHub',
+                    lang_ru_title: 'Русский',
+                    lang_gb_title: 'English',
+                },
+            };
+
+            function getStoredLang() {
+                try {
+                    const stored = localStorage.getItem('yalkee_monitors_lang');
+                    if (stored && (stored === 'ru' || stored === 'gb')) return stored;
+                } catch (e) { }
+                return 'ru';
+            }
+
+            function setStoredLang(lang) {
+                try {
+                    localStorage.setItem('yalkee_monitors_lang', lang);
+                } catch (e) { }
+            }
+
+            function applyLanguage(lang) {
+                langBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+                });
+                const trans = translations[lang];
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    const key = el.getAttribute('data-key');
+                    if (trans[key]) el.innerHTML = trans[key];
+                });
+                if (xCard && trans.x_title) xCard.setAttribute('title', trans.x_title);
+                langBtns.forEach(btn => {
+                    const btnLang = btn.getAttribute('data-lang');
+                    if (btnLang === 'ru' && trans.lang_ru_title) btn.setAttribute('title', trans.lang_ru_title);
+                    if (btnLang === 'gb' && trans.lang_gb_title) btn.setAttribute('title', trans.lang_gb_title);
+                });
+                document.documentElement.setAttribute('lang', lang === 'gb' ? 'en' : 'ru');
+            }
+
+            const currentLang = getStoredLang();
+            applyLanguage(currentLang);
+
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    if (lang && lang !== getStoredLang()) {
+                        setStoredLang(lang);
+                        applyLanguage(lang);
+                    }
+                });
+            });
+
+            function startAnimationSequence() {
+                document.body.style.overflow = 'hidden';
+
+                setTimeout(() => langToggle.classList.add('visible'), 300);
+                setTimeout(() => {
+                    logoImg.classList.add('spinning');
+                    logoGlow.classList.add('active');
+                }, 1500);
+                const spinEnd = 1500 + 1350;
+                setTimeout(() => {
+                    logoImg.classList.add('visible');
+                    logoImg.classList.remove('spinning');
+                    mainWrapper.classList.add('shifted');
+                    programTitle.classList.add('revealed');
+                }, spinEnd + 80);
+                const revealCardsDelay = spinEnd + 80 + 600;
+                setTimeout(() => versionsWrapper.classList.add('revealed'), revealCardsDelay);
+
+                setTimeout(() => {
+                    document.body.style.overflow = '';
+                }, revealCardsDelay + 100);
+            }
+
+            document.querySelectorAll('.version-item').forEach(item => {
+                item.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (this.getAttribute('data-shape') === 'X') {
+                            const href = this.getAttribute('href');
+                            if (href) window.open(href, '_blank', 'noopener,noreferrer');
+                        }
+                        this.focus();
+                    }
+                });
+            });
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', startAnimationSequence);
+            } else {
+                startAnimationSequence();
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) applyLanguage(getStoredLang());
+            });
+
+            console.log('%c🖥️ YalkeeMonitors %cLanding Ready',
+                'font-size: 1.3em; font-weight: bold; color: #5b8af7;',
+                'font-size: 1em; color: #c8ccdd;');
+        })();
+    </script>
 </body>
 
 </html>
