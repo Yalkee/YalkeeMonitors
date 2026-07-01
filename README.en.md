@@ -14,7 +14,7 @@
             <img src="https://github.com/somenmi/images/raw/main/Yalkee_Corporation/YalkeeMonitors/logo.png" width="120" height="120">
          </td>
         <td align="center">
-            <h1><b>Yalkee Monitors</b></h1>
+            <h1><b><a href="https://yalkee.github.io/YalkeeMonitors/">Yalkee Monitors</a></b></h1>
             <p><strong>Hardware control of brightness, contrast and RGB gamma channels for monitors</strong></p>
         </td>
      </tr>
