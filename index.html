@@ -254,7 +254,7 @@
         .logo-img.visible {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.35)) drop-shadow(0 0 16px rgba(28, 50, 182, 1));
+            filter: drop-shadow(0 4px 56px rgba(142, 159, 255, 0.35)) drop-shadow(0 0 2px rgba(142, 159, 255, 0.7));
         }
 
         @keyframes logoSpinIn {
@@ -291,7 +291,7 @@
             font-weight: 800;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            background: linear-gradient(90deg, #9fffaf 0%, #8e9fff 28%, #8e9fff 72%, #ff9999 100%);
+            background: linear-gradient(90deg, #9fffaf 0%, #8e9fff 40%, #8e9fff 60%, #ff9999 100%);
             background-size: 200% 100%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -376,7 +376,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            transition: background 0.3s ease 0.7s, border-color 0.2s ease, box-shadow 0.35s ease;
+            transition: background 0.2s ease-out 0s, border-color 0.2s ease, box-shadow 0.35s ease;
             box-shadow: var(--shadow-card);
         }
 
@@ -385,6 +385,7 @@
         }
 
         .version-item:hover .square {
+            transition: background 0.2s ease-in 0.7s;
             background: rgba(255, 245, 170, 0.25);
             border-color: var(--border-hover);
             box-shadow: var(--shadow-hover);
@@ -468,6 +469,13 @@
             white-space: normal;
             word-break: break-word;
             width: 100%;
+            opacity: 0;
+            transition: opacity 0s ease-out 0s;
+        }
+
+        .version-item:hover .desc-text {
+            opacity: 1;
+            transition: opacity 0.3s ease-in 0.7s;
         }
 
         .version-item[data-shape="v1.0"] .desc-panel {
