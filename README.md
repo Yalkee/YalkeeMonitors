@@ -67,7 +67,7 @@
 
 <div align="center">
 
-### ` DELL U221Ht; Cooler Master GM238-FFS; ...`
+### ` DELL U221Ht; Cooler Master GM238-FFS; AOC 27G42E; ...`
 
 ### ` Howens CX133TP-C; ...`
 
